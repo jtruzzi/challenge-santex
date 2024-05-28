@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { GET_COLLECTION_PRODUCTS } from '../../graphql/queries';
 import { ProductList } from '.';
 import { ThemeProvider } from 'styled-components';
@@ -21,10 +21,9 @@ describe('ProductList', () => {
       </ThemeProvider>
     );
 
-    await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    const { getByText } = screen;
-    expect(getByText('Error loading products.')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Error loading products.')).toBeInTheDocument();
+    });
   });
 
   it('shows the loading message', async () => {
@@ -36,7 +35,6 @@ describe('ProductList', () => {
       </ThemeProvider>
     );
 
-    const { getByTestId } = screen;
-    expect(getByTestId('loading-spinner')).toBeInTheDocument();
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 });

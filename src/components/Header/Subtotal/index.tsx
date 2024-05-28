@@ -22,8 +22,9 @@ export const Subtotal: React.FC = () => {
 
   return (
     <SubtotalDisplay>
-      Order Subtotal
-      <br />${subtotal}{' '}
+      <span>Order Subtotal</span>
+      <br />
+      <span>${subtotal}</span>{' '}
     </SubtotalDisplay>
   );
 };
