@@ -2,14 +2,26 @@ import {
   ApolloClient,
   ApolloLink,
   createHttpLink,
+  HttpLink,
   InMemoryCache,
 } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { ApolloProvider } from '@apollo/client/react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+
+const createAuthLink = () =>
+  setContext(() => {
+    const authToken = localStorage.getItem('Auth-Token');
+    let headers: Record<string, any> = {};
+    if (authToken) {
+      headers.authorization = `Bearer ${authToken}`;
+    }
+    return { headers };
+  });
 
 const commerceLink = createHttpLink({
   uri: 'https://demo.vendure.io/shop-api/shop-api',
@@ -34,7 +46,7 @@ const afterwareLink = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: ApolloLink.from([afterwareLink, commerceLink]),
+  link: ApolloLink.from([createAuthLink(), afterwareLink, commerceLink]),
 });
 
 ReactDOM.render(
